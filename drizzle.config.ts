@@ -7,6 +7,6 @@ export default defineConfig({
   verbose: true,
   strict: true,
   dbCredentials: {
-    url: "mysql://u943563710_emsprintconv:uCDO5Zu$@auth-db1237.hstgr.io:3306/u943563710_emsprintconv",
+    url: process.env.DATABASE_URL!,
   },
 });

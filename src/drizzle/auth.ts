@@ -79,5 +79,4 @@ export const { handlers, auth } = NextAuth({
   pages: {
     signIn: "/login",
   },
-  trustHost: true,
 });
