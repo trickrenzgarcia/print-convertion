@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1737879540081,
+      "tag": "0000_parched_mimic",
+      "breakpoints": true
+    }
+  ]
+}
