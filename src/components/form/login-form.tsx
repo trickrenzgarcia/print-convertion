@@ -45,7 +45,7 @@ export function LoginForm({
     })
 
     if(!response?.error) {
-      router.push("/")
+      router.push("/admin")
       router.refresh();
     } else {
       toast({

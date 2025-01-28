@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { auth } from "./drizzle/auth";
 
 export async function middleware(req: NextRequest) {
   // For protected routes, check for a valid session token
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const session = await auth();
 
-  if (!token) {
+  if (!session?.user) {
     const loginUrl = new URL("/login", req.url);
     return NextResponse.redirect(loginUrl);
   }
