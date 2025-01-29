@@ -5,12 +5,6 @@ import { db } from "./db";
 import { users } from "./migrations/schema";
 import { eq } from "drizzle-orm";
 
-type User = {
-  userId: string;
-  username: string;
-  role: string;
-};
-
 const validatePassword = async (dbPass: string, credPass: string) => {
   const isMatch = await compare(credPass, dbPass);
 

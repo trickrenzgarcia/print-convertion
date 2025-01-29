@@ -11,13 +11,6 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
 import { Button } from "./ui/button";
 import { CircleCheck, Loader2 } from "lucide-react";
 import jsPDF from "jspdf";
@@ -33,6 +26,7 @@ export type Data = {
   fullName: string;
   firstName: string;
   lastName: string;
+  address: string;
   precinct: string;
   size: number;
   type: string;
@@ -96,11 +90,17 @@ export default function ConvertionDetails({
       // Get the first name except last index;
       const firstName = arrFullName.slice(0, arrFullName.length - 1).join(" ");
       const lastName = arrFullName[arrFullName.length - 1];
+
+      const locationDetails = extractLocationDetails(file);
+      const address = `${locationDetails?.municipality || "Unknown"}, ${
+        locationDetails?.barangay || "Unknown"
+      }`; // Combine municipal and barangay for the address
       return {
         file,
         fullName: fullName,
         firstName: firstName,
         lastName: lastName,
+        address: address,
         precinct: precinct,
         size: file.size,
         type: file.type,
@@ -130,20 +130,22 @@ export default function ConvertionDetails({
 
       const ctx = canvas.getContext("2d");
       const template = new Image();
-      template.src = "/template.png";
+      template.src = "/template.jpg";
 
       await new Promise<void>((resolve) => {
+        const font = new FontFace("ALTGOT2N", `url(/ALTGOT2N.TTF)`);
         template.onload = () => {
           ctx?.drawImage(template, 0, 0, 900, 600);
 
           if (!ctx) return;
 
           // Add text
-          ctx.font = "21px Arial"; // Adjust font size for smaller card
+          ctx.font = "26px ALTGOT2N"; // Adjust font size for smaller card
           ctx.fillStyle = "black";
-          ctx.fillText(`${data.firstName}`, 485, 303); // Adjusted coordinates
-          ctx.fillText(`${data.lastName}`, 523, 365); // Adjusted coordinates
-          ctx.fillText(`${data.precinct}`, 518, 520);
+          ctx.fillText(`${data.firstName}`, 526, 301); // Adjusted coordinates
+          ctx.fillText(`${data.lastName}`, 525, 366); // Adjusted coordinates
+          ctx.fillText(`${data.address}`, 510, 434); // Adjusted coordinates
+          ctx.fillText(`${data.precinct}`, 521, 532);
 
           // Add QR Code
           if (!qrImageCache.has(data.file)) {
