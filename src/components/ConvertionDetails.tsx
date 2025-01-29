@@ -113,7 +113,7 @@ export default function ConvertionDetails({
       const lastName = arrFullName[arrFullName.length - 1];
 
       const locationDetails = extractLocationDetails(file);
-      const address = `${locationDetails?.barangay || "Unknown"}, ${locationDetails?.municipality || "Unknown"}`; // Combine municipal and barangay for the address
+      const address = `${locationDetails?.barangay || "Unknown"}, ${locationDetails?.municipality || "Unknown"}, ${locationDetails?.province}`; // Combine municipal and barangay for the address
       return {
         file,
         fullName: fullName,
@@ -153,6 +153,7 @@ export default function ConvertionDetails({
 
       await new Promise<void>((resolve) => {
         const font = new FontFace("ALTGOT2N", `url(/ALTGOT2N.TTF)`);
+        
         template.onload = () => {
           ctx?.drawImage(template, 0, 0, 900, 600);
 
@@ -169,8 +170,9 @@ export default function ConvertionDetails({
           ctx.fillText(data.lastName, 525, 366);
 
           // Draw address
+           // Sample address
           ctx.font = "bold 24px ALTGOT2N"; // Set font for address
-          drawWrappedText(ctx, data.address.toUpperCase(), 510, 434, 28, 24);
+          drawWrappedText(ctx, data.address, 510, 434, 28, 24);
 
           // Draw precinct
           ctx.font = "bold 26px ALTGOT2N"; // Set font for precinct
