@@ -63,11 +63,6 @@ export default function ConvertComponent() {
         files={files}
         setFiles={setFiles}
       />
-
-      {/* <Items files={files} setFiles={setFiles} /> */}
-
-      {/* <PrintQRIDCardButton files={files} setFiles={setFiles} /> */}
-      
     </div>
   );
 }

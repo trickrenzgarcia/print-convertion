@@ -153,7 +153,7 @@ export default function ConvertionDetails({
             qrImage.src = URL.createObjectURL(data.file);
 
             qrImage.onload = () => {
-              ctx.drawImage(qrImage, 50, 200, 300, 300); // Adjusted QR code size
+              ctx.drawImage(qrImage, 30, 175, 385, 385); // Adjusted QR code size
               const compressedQR = canvas
                 .toDataURL("image/jpeg", 0.7) // Compress QR image
                 .slice(); // Save compressed image in cache
@@ -165,7 +165,7 @@ export default function ConvertionDetails({
             const qrImage = new Image();
             qrImage.src = cachedQR ? cachedQR : "";
             qrImage.onload = () => {
-              ctx.drawImage(qrImage, 50, 200, 300, 300);
+              ctx.drawImage(qrImage, 30, 175, 385, 385);
               resolve();
             };
           }
