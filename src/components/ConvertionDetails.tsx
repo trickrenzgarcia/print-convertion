@@ -319,8 +319,8 @@ export default function ConvertionDetails({
                   <ScrollArea className="w-full h-52">
                     {Object.keys(groupedLocations[province]).map(
                       (municipality) => (
-                        <div key={municipality} className="space-y-2">
-                          <div className="space-y-4 mb-2">
+                        <div key={municipality} className="border-b-2 pb-1">
+                          <div className="space-y-4 mt-2">
                             <label className="text-lg font-medium">
                               Municipal
                             </label>
