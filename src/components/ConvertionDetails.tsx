@@ -79,6 +79,27 @@ export default function ConvertionDetails({
     return acc;
   }, {} as Record<string, Record<string, Set<string>>>);
 
+  // Function to draw wrapped text without breaking words
+  function drawWrappedText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, lineHeight: number, maxChars: number) {
+    const words = text.split(' ');
+    let currentLine = '';
+
+    words.forEach(word => {
+        // Check if adding the next word exceeds the maxChars limit
+        if ((currentLine + ' ' + word).length <= maxChars) {
+            currentLine = currentLine ? `${currentLine} ${word}` : word; // Add the word to the current line
+        } else {
+            ctx.fillText(currentLine, x, y); // Draw the current line
+            y += lineHeight; // Move to the next line
+            currentLine = word; // Start a new line with the current word
+        }
+    });
+
+    // Draw the last line
+    ctx.fillText(currentLine, x, y);
+    return y + lineHeight; // Return the updated y position
+  }
+
   const handleConvert = async () => {
     if (!files) return;
     setConverting(true);
@@ -92,9 +113,7 @@ export default function ConvertionDetails({
       const lastName = arrFullName[arrFullName.length - 1];
 
       const locationDetails = extractLocationDetails(file);
-      const address = `${locationDetails?.municipality || "Unknown"}, ${
-        locationDetails?.barangay || "Unknown"
-      }`; // Combine municipal and barangay for the address
+      const address = `${locationDetails?.barangay || "Unknown"}, ${locationDetails?.municipality || "Unknown"}`; // Combine municipal and barangay for the address
       return {
         file,
         fullName: fullName,
@@ -138,14 +157,24 @@ export default function ConvertionDetails({
           ctx?.drawImage(template, 0, 0, 900, 600);
 
           if (!ctx) return;
-
-          // Add text
-          ctx.font = "26px ALTGOT2N"; // Adjust font size for smaller card
+          // Set initial font and fill style
           ctx.fillStyle = "black";
-          ctx.fillText(`${data.firstName}`, 526, 301); // Adjusted coordinates
-          ctx.fillText(`${data.lastName}`, 525, 366); // Adjusted coordinates
-          ctx.fillText(`${data.address}`, 510, 434); // Adjusted coordinates
-          ctx.fillText(`${data.precinct}`, 521, 532);
+          // Draw first name
+          ctx.font = "bold 26px ALTGOT2N"; // Set font for first name
+          let y = 301;
+          y = drawWrappedText(ctx, data.firstName, 526, y, 27, 20);
+
+          // Draw last name
+          ctx.font = "bold 26px ALTGOT2N"; // Set font for last name
+          ctx.fillText(data.lastName, 525, 366);
+
+          // Draw address
+          ctx.font = "bold 24px ALTGOT2N"; // Set font for address
+          drawWrappedText(ctx, data.address.toUpperCase(), 510, 434, 28, 24);
+
+          // Draw precinct
+          ctx.font = "bold 26px ALTGOT2N"; // Set font for precinct
+          ctx.fillText(data.precinct, 521, 532);
 
           // Add QR Code
           if (!qrImageCache.has(data.file)) {
