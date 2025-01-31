@@ -131,7 +131,7 @@ export default function ConvertionDetails({
     const pageWidth = 595; // A4 width in points
     const xMargin = (pageWidth - 2 * cardWidth - 20) / 2; // Dynamic horizontal margin
     const yMargin = 30; // Top and bottom margin
-    const spacing = 20; // Spacing between cards
+    const spacing = 0; // Spacing between cards
     const cardsPerRow = 2; // Number of cards in each row
     const cardsPerColumn = 5; // Number of cards in each column
 
