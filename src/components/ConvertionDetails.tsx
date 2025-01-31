@@ -133,7 +133,7 @@ export default function ConvertionDetails({
     const yMargin = 30; // Top and bottom margin
     const spacing = 20; // Spacing between cards
     const cardsPerRow = 2; // Number of cards in each row
-    const cardsPerColumn = 6; // Number of cards in each column
+    const cardsPerColumn = 5; // Number of cards in each column
 
     let xOffset = xMargin;
     let yOffset = yMargin;
@@ -144,57 +144,41 @@ export default function ConvertionDetails({
     for (let i = 0; i < datas.length; i++) {
       const data = datas[i];
       const canvas = document.createElement("canvas");
-      canvas.width = 900; // Reduce dimensions if not necessary
+      canvas.width = 900;
       canvas.height = 600;
-
+    
       const ctx = canvas.getContext("2d");
       const template = new Image();
       template.src = "/template.jpg";
-
+    
       await new Promise<void>((resolve) => {
-        const font = new FontFace("ALTGOT2N", `url(/ALTGOT2N.TTF)`);
-        
         template.onload = () => {
-          ctx?.drawImage(template, 0, 0, 900, 600);
-
           if (!ctx) return;
-          // Set initial font and fill style
+          ctx.drawImage(template, 0, 0, 900, 600);
+    
+          // Set text styles
           ctx.fillStyle = "black";
-          // Draw first name
-          ctx.font = "bold 26px ALTGOT2N"; // Set font for first name
+          ctx.font = "bold 26px ALTGOT2N";
+    
           let y = 301;
           y = drawWrappedText(ctx, data.firstName, 526, y, 27, 20);
-
-          // Draw last name
-          ctx.font = "bold 26px ALTGOT2N"; // Set font for last name
           ctx.fillText(data.lastName, 525, 366);
-
-          // Draw address
-           // Sample address
-          ctx.font = "bold 24px ALTGOT2N"; // Set font for address
           drawWrappedText(ctx, data.address, 510, 434, 28, 24);
-
-          // Draw precinct
-          ctx.font = "bold 26px ALTGOT2N"; // Set font for precinct
           ctx.fillText(data.precinct, 521, 532);
-
-          // Add QR Code
+    
+          // QR Code Logic
           if (!qrImageCache.has(data.file)) {
             const qrImage = new Image();
             qrImage.src = URL.createObjectURL(data.file);
-
             qrImage.onload = () => {
-              ctx.drawImage(qrImage, 30, 175, 385, 385); // Adjusted QR code size
-              const compressedQR = canvas
-                .toDataURL("image/jpeg", 0.7) // Compress QR image
-                .slice(); // Save compressed image in cache
-              qrImageCache.set(data.file, compressedQR);
+              ctx.drawImage(qrImage, 30, 175, 385, 385);
+              qrImageCache.set(data.file, canvas.toDataURL("image/jpeg", 0.7));
               resolve();
             };
           } else {
             const cachedQR = qrImageCache.get(data.file);
             const qrImage = new Image();
-            qrImage.src = cachedQR ? cachedQR : "";
+            qrImage.src = cachedQR!;
             qrImage.onload = () => {
               ctx.drawImage(qrImage, 30, 175, 385, 385);
               resolve();
@@ -202,37 +186,29 @@ export default function ConvertionDetails({
           }
         };
       });
-
-      const imgData = canvas.toDataURL("image/jpeg", 0.7); // Compress final card as JPEG
-
-      
-
+    
+      // Ensure the image is properly loaded before adding it to the PDF
+      const imgData = canvas.toDataURL("image/jpeg", 0.7);
       pdf.addImage(imgData, "JPEG", xOffset, yOffset, cardWidth, cardHeight);
-
+    
       xOffset += cardWidth + spacing;
-
-      // Move to the next row if the current row is full
+    
+      // Move to the next row after every two cards
       if ((i + 1) % cardsPerRow === 0) {
         xOffset = xMargin;
-        yOffset += cardHeight + spacing;
+        yOffset += cardHeight;
       }
-
-      // Add a new page if the current page is full
+    
+      // Add a new page after 5 rows (10 cards)
       if ((i + 1) % (cardsPerRow * cardsPerColumn) === 0) {
         pdf.addPage();
         xOffset = xMargin;
         yOffset = yMargin;
       }
-
-      countData++;
     }
-
+    
+    // Save PDF
     pdf.save(`ems_printed_ids-${Date.now()}.pdf`);
-    toast({
-      title: 'Downloaded',
-      description: `pdf downloaded successfully`,
-      duration: 2500,
-    })
 
     // Get the existing logs from localStorage or initialize an empty array
     const existingLogs = JSON.parse(localStorage.getItem("logs") || "[]");
