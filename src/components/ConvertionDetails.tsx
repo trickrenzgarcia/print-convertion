@@ -127,14 +127,14 @@ export default function ConvertionDetails({
     });
     const pdf = new jsPDF("portrait", "pt", "a4");
     const cardWidth = 234; // 3 1/4 inches in points
-    const cardHeight = 144; // 2 inches in points
+    const cardHeight = 153; // 2 inches in points
     const pageWidth = 595; // A4 width in points
     const xMargin = (pageWidth - 2 * cardWidth - 20) / 2; // Dynamic horizontal margin
     const yMargin = 30; // Top and bottom margin
     const spacing = 10; // Spacing between cards
     const cardsPerRow = 2; // Number of cards in each row
     const cardsPerColumn = 5; // Number of cards in each column
-
+    const spacingY = 8; // Vertical spacing (add space between rows)
     let xOffset = xMargin;
     let yOffset = yMargin;
     let countData = 0;
@@ -196,7 +196,7 @@ export default function ConvertionDetails({
       // Move to the next row after every two cards
       if ((i + 1) % cardsPerRow === 0) {
         xOffset = xMargin;
-        yOffset += cardHeight;
+        yOffset += cardHeight + spacingY; // Add vertical spacing
       }
     
       // Add a new page after 5 rows (10 cards)
