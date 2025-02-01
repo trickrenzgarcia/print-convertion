@@ -134,7 +134,7 @@ export default function ConvertionDetails({
     const spacing = 10; // Spacing between cards
     const cardsPerRow = 2; // Number of cards in each row
     const cardsPerColumn = 5; // Number of cards in each column
-    const spacingY = 8; // Vertical spacing (add space between rows)
+    const spacingY = 1; // Vertical spacing (add space between rows)
     let xOffset = xMargin;
     let yOffset = yMargin;
     let countData = 0;
